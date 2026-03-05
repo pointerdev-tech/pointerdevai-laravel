@@ -1,0 +1,20 @@
+# Packagist auto-syncs from GitHub; this workflow pings the Packagist webhook on tag push
+# so new releases are indexed immediately instead of waiting for periodic polling.
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Notify Packagist
+        run: curl -X POST "$PACKAGIST_WEBHOOK_URL"
+        env:
+          PACKAGIST_WEBHOOK_URL: ${{ secrets.PACKAGIST_WEBHOOK_URL }}

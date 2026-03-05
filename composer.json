@@ -1,0 +1,45 @@
+{
+  "name": "pointerdev/pointerai-laravel",
+  "description": "Official Laravel client package for PointerAI chat APIs.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "pointerai",
+    "laravel",
+    "chat",
+    "sdk"
+  ],
+  "require": {
+    "php": "^8.1",
+    "illuminate/support": "^10.0|^11.0|^12.0",
+    "illuminate/http": "^10.0|^11.0|^12.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "PointerDev\\PointerAI\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PointerDev\\PointerAI\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit -c phpunit.xml.dist"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "PointerDev\\PointerAI\\PointerAIServiceProvider"
+      ],
+      "aliases": {
+        "PointerAI": "PointerDev\\PointerAI\\Facades\\PointerAI"
+      }
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
