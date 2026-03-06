@@ -1,11 +1,11 @@
-# pointerdev/pointerai-laravel
+# pointerdev/pointerdevai-chat-sdk-laravel
 
 Official Laravel package for PointerAI chat APIs.
 
 ## Install
 
 ```bash
-composer require pointerdev/pointerai-laravel
+composer require pointerdev/pointerdevai-chat-sdk-laravel
 ```
 
 ## Publish config (optional)
@@ -17,7 +17,7 @@ php artisan vendor:publish --tag=pointerai-config
 ## Environment variables
 
 ```env
-POINTERAI_BASE_URL=http://localhost:8000
+POINTERAI_BASE_URL=https://pointerdev.ai
 POINTERAI_PROJECT_ID=your-project-uuid
 POINTERAI_PUBLISHABLE_KEY=pk_...
 POINTERAI_SECRET_KEY=sk_... # keep server-side only

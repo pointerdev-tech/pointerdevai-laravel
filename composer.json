@@ -1,5 +1,5 @@
 {
-  "name": "pointerdev/pointerai-laravel",
+  "name": "pointerdev/pointerdevai-chat-sdk-laravel",
   "description": "Official Laravel client package for PointerAI chat APIs.",
   "type": "library",
   "license": "MIT",

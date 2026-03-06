@@ -8,7 +8,7 @@ return [
     | PointerAI API Base URL
     |--------------------------------------------------------------------------
     */
-    'base_url' => env('POINTERAI_BASE_URL', 'http://localhost:8000'),
+    'base_url' => env('POINTERAI_BASE_URL', 'https://pointerdev.ai'),
 
     /*
     |--------------------------------------------------------------------------
