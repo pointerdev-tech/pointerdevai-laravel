@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Tests\Auth;
+namespace PointerDev\AIChat\Tests\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PointerDev\PointerAI\Auth\PointerAIEndUserTokenFactory;
+use PointerDev\AIChat\Auth\AIChatEndUserTokenFactory;
 
-final class PointerAIEndUserTokenFactoryTest extends TestCase
+final class AIChatEndUserTokenFactoryTest extends TestCase
 {
     public function test_it_mints_token_with_expected_claims(): void
     {
-        $factory = new PointerAIEndUserTokenFactory(
+        $factory = new AIChatEndUserTokenFactory(
             projectId: '11111111-1111-1111-1111-111111111111',
             secretKey: 'test-secret-key',
             ttlMinutes: 30
@@ -41,7 +41,7 @@ final class PointerAIEndUserTokenFactoryTest extends TestCase
         $this->assertSame('user@example.com', $payload['email']);
         $this->assertSame('Test User', $payload['name']);
         $this->assertSame(['owner', 'tester'], $payload['roles']);
-        $this->assertSame('pointerai-laravel', $payload['metadata']['source']);
+        $this->assertSame('ai-chat-laravel', $payload['metadata']['source']);
         $this->assertSame('auth-user', $payload['metadata']['provider']);
         $this->assertIsInt($payload['iat']);
         $this->assertIsInt($payload['exp']);
@@ -51,7 +51,7 @@ final class PointerAIEndUserTokenFactoryTest extends TestCase
     public function test_it_requires_project_id_and_secret_key(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new PointerAIEndUserTokenFactory(
+        new AIChatEndUserTokenFactory(
             projectId: '',
             secretKey: 'test-secret-key'
         );

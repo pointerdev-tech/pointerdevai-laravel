@@ -1,40 +1,40 @@
-# pointerdev/pointerdevai-chat-sdk-laravel
+# pointerdev/ai-chat-laravel
 
-Official Laravel package for PointerAI chat APIs.
+Official Laravel package for PointerDev AI chat APIs.
 
 ## Install
 
 ```bash
-composer require pointerdev/pointerdevai-chat-sdk-laravel
+composer require pointerdev/ai-chat-laravel
 ```
 
 ## Publish config (optional)
 
 ```bash
-php artisan vendor:publish --tag=pointerai-config
+php artisan vendor:publish --tag=ai-chat-config
 ```
 
 ## Environment variables
 
 ```env
-POINTERAI_BASE_URL=https://pointerdev.ai
-POINTERAI_PROJECT_ID=your-project-uuid
-POINTERAI_PUBLISHABLE_KEY=pk_...
-POINTERAI_SECRET_KEY=sk_... # keep server-side only
-POINTERAI_END_USER_TOKEN=   # optional test-only fallback
-POINTERAI_TIMEOUT=20
-POINTERAI_RUNTIME_AUTH_ENABLED=true
-POINTERAI_RUNTIME_SESSION_STORE_KEY=pointerai.runtime_session
-POINTERAI_RUNTIME_END_USER_TTL_MINUTES=60
-POINTERAI_RUNTIME_REFRESH_LEEWAY_SECONDS=5
+AI_CHAT_BASE_URL=https://pointerdev.ai
+AI_CHAT_PROJECT_ID=your-project-uuid
+AI_CHAT_PUBLISHABLE_KEY=pk_...
+AI_CHAT_SECRET_KEY=sk_... # keep server-side only
+AI_CHAT_END_USER_TOKEN=   # optional test-only fallback
+AI_CHAT_TIMEOUT=20
+AI_CHAT_RUNTIME_AUTH_ENABLED=true
+AI_CHAT_RUNTIME_SESSION_STORE_KEY=ai_chat.runtime_session
+AI_CHAT_RUNTIME_END_USER_TTL_MINUTES=60
+AI_CHAT_RUNTIME_REFRESH_LEEWAY_SECONDS=5
 ```
 
 ## Quick usage
 
 ```php
-use PointerDev\PointerAI\Facades\PointerAI;
+use PointerDev\AIChat\Facades\AIChat;
 
-$result = PointerAI::chat([
+$result = AIChat::chat([
     'message' => 'Hello from Laravel',
     'anon_uid' => 'demo-anon-user',
     'metadata' => ['source' => 'laravel-app'],
@@ -46,9 +46,9 @@ $answer = $result['answer'] ?? null;
 ## login_required projects
 
 ```php
-use PointerDev\PointerAI\Facades\PointerAI;
+use PointerDev\AIChat\Facades\AIChat;
 
-$client = PointerAI::withEndUserToken('<END_USER_JWT>');
+$client = AIChat::withEndUserToken('<END_USER_JWT>');
 
 // Exchange once for short-lived runtime session token
 $client->exchangeSessionToken();
@@ -61,9 +61,9 @@ $result = $client->chat([
 ## Runtime Session Token Flow (recommended)
 
 ```php
-use PointerDev\PointerAI\Facades\PointerAI;
+use PointerDev\AIChat\Facades\AIChat;
 
-$client = PointerAI::withEndUserToken($endUserJwtFromYourBackend);
+$client = AIChat::withEndUserToken($endUserJwtFromYourBackend);
 
 // Exchange end-user token for runtime session token
 $sessionAuth = $client->exchangeSessionToken();
@@ -81,9 +81,9 @@ $client->revokeSessionToken();
 
 ## Phase 3 auth adapter (Laravel middleware)
 
-The package now provides middleware alias `pointerai.runtime-session` that:
+The package now provides middleware alias `ai-chat.runtime-session` that:
 - reads `Auth::user()`
-- mints a PointerAI end-user token server-side using `POINTERAI_SECRET_KEY`
+- mints a PointerDev AI end-user token server-side using `AI_CHAT_SECRET_KEY`
 - exchanges/refreshes runtime session token
 - persists runtime session token in Laravel session storage
 - binds stored runtime session state to the authenticated user identity
@@ -93,9 +93,9 @@ Identity note: Laravel derives end-user `sub` from the auth identifier. WordPres
 Register middleware in your route group:
 
 ```php
-Route::middleware(['web', 'auth', 'pointerai.runtime-session'])->group(function () {
+Route::middleware(['web', 'auth', 'ai-chat.runtime-session'])->group(function () {
     Route::get('/chat', function () {
-        $result = app(\PointerDev\PointerAI\PointerAIClient::class)->chat([
+        $result = app(\PointerDev\AIChat\AIChatClient::class)->chat([
             'message' => 'Hello from middleware flow',
             'metadata' => ['source' => 'laravel-runtime-adapter'],
         ]);
@@ -108,7 +108,7 @@ Route::middleware(['web', 'auth', 'pointerai.runtime-session'])->group(function 
 Optional logout cleanup (revokes runtime token):
 
 ```php
-app(\PointerDev\PointerAI\Auth\PointerAIRuntimeSessionManager::class)
+app(\PointerDev\AIChat\Auth\AIChatRuntimeSessionManager::class)
     ->revokeForRequest(request());
 ```
 

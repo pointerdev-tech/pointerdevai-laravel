@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Auth;
+namespace PointerDev\AIChat\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
-use PointerDev\PointerAI\Exceptions\PointerAIRequestException;
-use PointerDev\PointerAI\PointerAIClient;
+use PointerDev\AIChat\Exceptions\AIChatRequestException;
+use PointerDev\AIChat\AIChatClient;
 
-class PointerAIRuntimeSessionManager
+class AIChatRuntimeSessionManager
 {
     public function __construct(
-        private readonly PointerAIClient $client,
+        private readonly AIChatClient $client,
         private readonly array $config
     ) {}
 
@@ -45,7 +45,7 @@ class PointerAIRuntimeSessionManager
                 ]);
                 $this->persistState($request, $response, $identity);
                 return;
-            } catch (PointerAIRequestException|InvalidArgumentException) {
+            } catch (AIChatRequestException|InvalidArgumentException) {
                 $this->clearState($request);
                 $this->client->clearSessionToken();
                 $state = [];
@@ -53,7 +53,7 @@ class PointerAIRuntimeSessionManager
         }
 
         if (!isset($state['token']) || !is_string($state['token']) || trim($state['token']) === '') {
-            $tokenFactory = new PointerAIEndUserTokenFactory(
+            $tokenFactory = new AIChatEndUserTokenFactory(
                 projectId: $projectId,
                 secretKey: $secretKey,
                 ttlMinutes: (int) ($this->config['runtime_end_user_ttl_minutes'] ?? 60),
@@ -79,7 +79,7 @@ class PointerAIRuntimeSessionManager
                 'token' => $state['token'],
                 'clear_session' => true,
             ]);
-        } catch (PointerAIRequestException|InvalidArgumentException) {
+        } catch (AIChatRequestException|InvalidArgumentException) {
             // Ignore transport errors during logout cleanup.
         }
 
@@ -194,7 +194,7 @@ class PointerAIRuntimeSessionManager
     {
         $key = isset($this->config['runtime_session_store_key'])
             ? trim((string) $this->config['runtime_session_store_key'])
-            : 'pointerai.runtime_session';
-        return $key !== '' ? $key : 'pointerai.runtime_session';
+            : 'ai_chat.runtime_session';
+        return $key !== '' ? $key : 'ai_chat.runtime_session';
     }
 }

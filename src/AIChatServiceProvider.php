@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI;
+namespace PointerDev\AIChat;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use PointerDev\PointerAI\Auth\PointerAIRuntimeSessionManager;
-use PointerDev\PointerAI\Auth\PointerAIRuntimeSessionMiddleware;
+use PointerDev\AIChat\Auth\AIChatRuntimeSessionManager;
+use PointerDev\AIChat\Auth\AIChatRuntimeSessionMiddleware;
 
-class PointerAIServiceProvider extends ServiceProvider
+class AIChatServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/pointerai.php', 'pointerai');
+        $this->mergeConfigFrom(__DIR__ . '/../config/ai-chat.php', 'ai-chat');
 
-        $clientFactory = function (Application $app): PointerAIClient {
-            $config = (array) $app['config']->get('pointerai', []);
+        $clientFactory = function (Application $app): AIChatClient {
+            $config = (array) $app['config']->get('ai-chat', []);
 
-            return new PointerAIClient(
+            return new AIChatClient(
                 baseUrl: (string) ($config['base_url'] ?? ''),
                 projectId: (string) ($config['project_id'] ?? ''),
                 publishableKey: (string) ($config['publishable_key'] ?? ''),
@@ -31,17 +31,17 @@ class PointerAIServiceProvider extends ServiceProvider
 
         if (method_exists($this->app, 'scoped')) {
             // Ensure mutable auth/session state is isolated per request (Octane/Swoole-safe).
-            $this->app->scoped(PointerAIClient::class, $clientFactory);
+            $this->app->scoped(AIChatClient::class, $clientFactory);
         } else {
-            $this->app->singleton(PointerAIClient::class, $clientFactory);
+            $this->app->singleton(AIChatClient::class, $clientFactory);
         }
 
-        $this->app->alias(PointerAIClient::class, 'pointerai.client');
-        $this->app->bind(PointerAIRuntimeSessionManager::class, function (Application $app): PointerAIRuntimeSessionManager {
-            $config = (array) $app['config']->get('pointerai', []);
-            return new PointerAIRuntimeSessionManager(
+        $this->app->alias(AIChatClient::class, 'ai-chat.client');
+        $this->app->bind(AIChatRuntimeSessionManager::class, function (Application $app): AIChatRuntimeSessionManager {
+            $config = (array) $app['config']->get('ai-chat', []);
+            return new AIChatRuntimeSessionManager(
                 // Runtime manager mutates the same request-scoped client that app code resolves.
-                client: $app->make(PointerAIClient::class),
+                client: $app->make(AIChatClient::class),
                 config: $config
             );
         });
@@ -50,13 +50,13 @@ class PointerAIServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__ . '/../config/pointerai.php' => config_path('pointerai.php'),
-        ], 'pointerai-config');
+            __DIR__ . '/../config/ai-chat.php' => config_path('ai-chat.php'),
+        ], 'ai-chat-config');
 
         if ($this->app->bound('router')) {
             /** @var Router $router */
             $router = $this->app->make('router');
-            $router->aliasMiddleware('pointerai.runtime-session', PointerAIRuntimeSessionMiddleware::class);
+            $router->aliasMiddleware('ai-chat.runtime-session', AIChatRuntimeSessionMiddleware::class);
         }
     }
 }

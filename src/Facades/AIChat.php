@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Facades;
+namespace PointerDev\AIChat\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class PointerAI extends Facade
+class AIChat extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'pointerai.client';
+        return 'ai-chat.client';
     }
 }

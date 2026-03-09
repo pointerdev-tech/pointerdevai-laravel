@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Tests\Auth;
+namespace PointerDev\AIChat\Tests\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Session\Session as SessionContract;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PointerDev\PointerAI\Auth\PointerAIRuntimeSessionManager;
-use PointerDev\PointerAI\PointerAIClient;
+use PointerDev\AIChat\Auth\AIChatRuntimeSessionManager;
+use PointerDev\AIChat\AIChatClient;
 
-final class PointerAIRuntimeSessionManagerTest extends TestCase
+final class AIChatRuntimeSessionManagerTest extends TestCase
 {
     public function test_bootstrap_exchanges_and_persists_when_no_state(): void
     {
-        $client = $this->createMock(PointerAIClient::class);
+        $client = $this->createMock(AIChatClient::class);
         [$request, $session] = $this->buildRequestWithState([]);
         $config = $this->baseConfig();
-        $manager = new PointerAIRuntimeSessionManager($client, $config);
+        $manager = new AIChatRuntimeSessionManager($client, $config);
         $user = new RuntimeUser('user-1');
 
         $client->expects($this->exactly(2))
@@ -38,7 +38,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
         $session->expects($this->once())
             ->method('put')
             ->with(
-                'pointerai.runtime_session',
+                'ai_chat.runtime_session',
                 $this->callback(function (array $state): bool {
                     return $state['token'] === 'session-token-1'
                         && $state['session_id'] === 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
@@ -47,7 +47,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
                         && $state['identity'] !== '';
                 })
             );
-        $session->expects($this->once())->method('forget')->with('pointerai.runtime_session');
+        $session->expects($this->once())->method('forget')->with('ai_chat.runtime_session');
 
         $manager->bootstrapForUser($request, $user);
     }
@@ -62,8 +62,8 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
             'session_id' => 'cccccccc-cccc-cccc-cccc-cccccccccccc',
             'identity' => $identity,
         ]);
-        $client = $this->createMock(PointerAIClient::class);
-        $manager = new PointerAIRuntimeSessionManager($client, $this->baseConfig());
+        $client = $this->createMock(AIChatClient::class);
+        $manager = new AIChatRuntimeSessionManager($client, $this->baseConfig());
         $user = new RuntimeUser('user-2');
 
         $client->expects($this->exactly(2))
@@ -86,7 +86,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
         $session->expects($this->once())
             ->method('put')
             ->with(
-                'pointerai.runtime_session',
+                'ai_chat.runtime_session',
                 $this->callback(fn (array $state): bool => $state['token'] === 'new-session' && $state['identity'] === $identity)
             );
         $session->expects($this->never())->method('forget');
@@ -103,8 +103,8 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
             'session_id' => 'dddddddd-dddd-dddd-dddd-dddddddddddd',
             'identity' => 'not-matching',
         ]);
-        $client = $this->createMock(PointerAIClient::class);
-        $manager = new PointerAIRuntimeSessionManager($client, $this->baseConfig());
+        $client = $this->createMock(AIChatClient::class);
+        $manager = new AIChatRuntimeSessionManager($client, $this->baseConfig());
         $user = new RuntimeUser('user-3');
 
         $client->expects($this->exactly(2))
@@ -120,11 +120,11 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
                 'refresh_available_at' => '2029-12-31T23:55:00+00:00',
                 'session_id' => 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
             ]);
-        $session->expects($this->once())->method('forget')->with('pointerai.runtime_session');
+        $session->expects($this->once())->method('forget')->with('ai_chat.runtime_session');
         $session->expects($this->once())
             ->method('put')
             ->with(
-                'pointerai.runtime_session',
+                'ai_chat.runtime_session',
                 $this->callback(fn (array $state): bool => $state['token'] === 'fresh-session')
             );
 
@@ -140,8 +140,8 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
             'session_id' => 'ffffffff-ffff-ffff-ffff-ffffffffffff',
             'identity' => 'identity',
         ]);
-        $client = $this->createMock(PointerAIClient::class);
-        $manager = new PointerAIRuntimeSessionManager($client, $this->baseConfig());
+        $client = $this->createMock(AIChatClient::class);
+        $manager = new AIChatRuntimeSessionManager($client, $this->baseConfig());
 
         $client->expects($this->once())
             ->method('revokeSessionToken')
@@ -150,7 +150,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
                 'clear_session' => true,
             ]);
         $client->expects($this->once())->method('clearSessionToken');
-        $session->expects($this->once())->method('forget')->with('pointerai.runtime_session');
+        $session->expects($this->once())->method('forget')->with('ai_chat.runtime_session');
 
         $manager->revokeForRequest($request);
     }
@@ -164,7 +164,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
         /** @var SessionContract&MockObject $session */
         $session = $this->createMock(SessionContract::class);
         $session->method('get')
-            ->with('pointerai.runtime_session', [])
+            ->with('ai_chat.runtime_session', [])
             ->willReturn($state);
 
         /** @var Request&MockObject $request */
@@ -190,7 +190,7 @@ final class PointerAIRuntimeSessionManagerTest extends TestCase
             'project_id' => 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
             'runtime_end_user_ttl_minutes' => 60,
             'runtime_refresh_leeway_seconds' => 5,
-            'runtime_session_store_key' => 'pointerai.runtime_session',
+            'runtime_session_store_key' => 'ai_chat.runtime_session',
         ];
     }
 }

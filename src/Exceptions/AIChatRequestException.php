@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Exceptions;
+namespace PointerDev\AIChat\Exceptions;
 
 use RuntimeException;
 
-class PointerAIRequestException extends RuntimeException
+class AIChatRequestException extends RuntimeException
 {
     public function __construct(
         public readonly int $status,
@@ -28,6 +28,6 @@ class PointerAIRequestException extends RuntimeException
             return $responseBody;
         }
 
-        return sprintf('PointerAI request failed with status %d.', $status);
+        return sprintf('AI Chat request failed with status %d.', $status);
     }
 }

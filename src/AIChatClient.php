@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI;
+namespace PointerDev\AIChat;
 
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
-use PointerDev\PointerAI\Exceptions\PointerAIRequestException;
+use PointerDev\AIChat\Exceptions\AIChatRequestException;
 
-class PointerAIClient
+class AIChatClient
 {
     private string $baseUrl;
     private string $projectId;
@@ -357,13 +357,13 @@ class PointerAIClient
                             authMode: $authMode,
                             retryOnAuthFailure: false
                         );
-                    } catch (PointerAIRequestException|InvalidArgumentException) {
+                    } catch (AIChatRequestException|InvalidArgumentException) {
                         // Fall through and throw original request error.
                     }
                 }
             }
 
-            throw new PointerAIRequestException(
+            throw new AIChatRequestException(
                 status: $response->status(),
                 responseBody: (string) $response->body(),
                 responseData: $response->json()
@@ -467,15 +467,15 @@ class PointerAIClient
     private function assertConfigured(): void
     {
         if ($this->baseUrl === '') {
-            throw new InvalidArgumentException('PointerAI base URL is missing.');
+            throw new InvalidArgumentException('AI Chat base URL is missing.');
         }
 
         if ($this->projectId === '') {
-            throw new InvalidArgumentException('PointerAI project ID is missing.');
+            throw new InvalidArgumentException('AI Chat project ID is missing.');
         }
 
         if ($this->publishableKey === '') {
-            throw new InvalidArgumentException('PointerAI publishable key is missing.');
+            throw new InvalidArgumentException('AI Chat publishable key is missing.');
         }
     }
 

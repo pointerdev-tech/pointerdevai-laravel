@@ -1,10 +1,10 @@
 {
-  "name": "pointerdev/pointerdevai-chat-sdk-laravel",
-  "description": "Official Laravel client package for PointerAI chat APIs.",
+  "name": "pointerdev/ai-chat-laravel",
+  "description": "Official Laravel client package for PointerDev AI chat APIs.",
   "type": "library",
   "license": "MIT",
   "keywords": [
-    "pointerai",
+    "pointerdevai",
     "laravel",
     "chat",
     "sdk"
@@ -19,12 +19,12 @@
   },
   "autoload": {
     "psr-4": {
-      "PointerDev\\PointerAI\\": "src/"
+      "PointerDev\\AIChat\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "PointerDev\\PointerAI\\Tests\\": "tests/"
+      "PointerDev\\AIChat\\Tests\\": "tests/"
     }
   },
   "scripts": {
@@ -33,10 +33,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "PointerDev\\PointerAI\\PointerAIServiceProvider"
+        "PointerDev\\AIChat\\AIChatServiceProvider"
       ],
       "aliases": {
-        "PointerAI": "PointerDev\\PointerAI\\Facades\\PointerAI"
+        "AIChat": "PointerDev\\AIChat\\Facades\\AIChat"
       }
     }
   },

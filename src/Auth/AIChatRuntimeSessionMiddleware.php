@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Auth;
+namespace PointerDev\AIChat\Auth;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
-class PointerAIRuntimeSessionMiddleware
+class AIChatRuntimeSessionMiddleware
 {
     public function __construct(
-        private readonly PointerAIRuntimeSessionManager $manager
+        private readonly AIChatRuntimeSessionManager $manager
     ) {}
 
     /**
-     * Bootstrap PointerAI runtime session for authenticated Laravel users.
+     * Bootstrap PointerDev AI runtime session for authenticated Laravel users.
      *
      * If user is authenticated and package runtime auth is enabled, middleware:
-     * - maps Auth::user() to server-minted PointerAI end-user token
+     * - maps Auth::user() to server-minted PointerDev AI end-user token
      * - exchanges/refreshes runtime session token
      * - persists runtime session token in Laravel session store
      */
@@ -34,7 +34,7 @@ class PointerAIRuntimeSessionMiddleware
             try {
                 $this->manager->bootstrapForUser($request, $user);
             } catch (Throwable $e) {
-                // Do not fail the host application request if PointerAI is unavailable.
+                // Do not fail the host application request if PointerDev AI is unavailable.
             }
         }
 

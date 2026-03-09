@@ -7,7 +7,7 @@
     colors="true"
 >
     <testsuites>
-        <testsuite name="PointerAI Laravel Package">
+        <testsuite name="AI Chat Laravel Package">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

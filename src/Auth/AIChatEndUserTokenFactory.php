@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PointerDev\PointerAI\Auth;
+namespace PointerDev\AIChat\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use InvalidArgumentException;
 
-class PointerAIEndUserTokenFactory
+class AIChatEndUserTokenFactory
 {
     private const ALGORITHM = 'HS256';
 
@@ -17,10 +17,10 @@ class PointerAIEndUserTokenFactory
         private readonly int $ttlMinutes = 60,
     ) {
         if (trim($this->projectId) === '') {
-            throw new InvalidArgumentException('PointerAI project_id is required for end-user token minting.');
+            throw new InvalidArgumentException('AI Chat project_id is required for end-user token minting.');
         }
         if (trim($this->secretKey) === '') {
-            throw new InvalidArgumentException('PointerAI secret_key is required for end-user token minting.');
+            throw new InvalidArgumentException('AI Chat secret_key is required for end-user token minting.');
         }
     }
 
@@ -61,7 +61,7 @@ class PointerAIEndUserTokenFactory
             'name' => is_scalar($user->name ?? null) ? (string) $user->name : null,
             'roles' => count($roles) > 0 ? $roles : null,
             'metadata' => [
-                'source' => 'pointerai-laravel',
+                'source' => 'ai-chat-laravel',
                 'provider' => 'auth-user',
             ],
         ];
